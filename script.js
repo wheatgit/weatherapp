@@ -1,8 +1,69 @@
-// Visual Crossing API configuration
-const API_KEY = 'THM84QNBNTNGPR6DM97DSB2ZL'; // You'll need to replace this with your actual API key
+const API_KEY = 'THM84QNBNTNGPR6DM97DSB2ZL';
 const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 
-// Function to fetch weather data for a location
+const OPENCAGE_API_KEY = 'c877ae3eb0604def802660d527e999f1'; 
+const OPENCAGE_URL = 'https://api.opencagedata.com/geocode/v1/json';
+
+function initializeAutocomplete() {
+    const input = document.getElementById('locationInput');
+    let timeoutId;
+    
+    input.addEventListener('input', function() {
+        clearTimeout(timeoutId);
+        const query = input.value.trim();
+        
+        if (query.length < 3) {
+            hideSuggestions();
+            return;
+        }
+        
+        timeoutId = setTimeout(() => {
+            searchLocations(query);
+        }, 300);
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !document.getElementById('suggestions').contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+}
+
+async function searchLocations(query) {
+    try {
+        const response = await fetch(`${OPENCAGE_URL}?q=${encodeURIComponent(query)}&key=${OPENCAGE_API_KEY}&limit=5&no_annotations=1`);
+        const data = await response.json();
+        
+        if (data.results) {
+            showSuggestions(data.results);
+        }
+    } catch (error) {
+        console.error('Error searching locations:', error);
+    }
+}
+
+function showSuggestions(results) {
+    const suggestionsDiv = document.getElementById('suggestions');
+    suggestionsDiv.innerHTML = '';
+    
+    results.forEach(result => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.textContent = result.formatted;
+        div.addEventListener('click', () => {
+            document.getElementById('locationInput').value = result.formatted;
+            hideSuggestions();
+        });
+        suggestionsDiv.appendChild(div);
+    });
+    
+    suggestionsDiv.style.display = 'block';
+}
+
+function hideSuggestions() {
+    document.getElementById('suggestions').style.display = 'none';
+}
+
 async function fetchWeatherData(location) {
     try {
         const response = await fetch(`${BASE_URL}/${encodeURIComponent(location)}?unitGroup=us&include=current&key=${API_KEY}&contentType=json`);
@@ -20,7 +81,6 @@ async function fetchWeatherData(location) {
     }
 }
 
-// Function to process the raw API data and extract only needed information
 function processWeatherData(rawData) {
     try {
         const currentConditions = rawData.currentConditions;
@@ -44,7 +104,6 @@ function processWeatherData(rawData) {
     }
 }
 
-// Function to get weather icon based on conditions
 function getWeatherIcon(description) {
     const weatherIcons = {
         'clear': 'wi-day-sunny',
@@ -62,7 +121,6 @@ function getWeatherIcon(description) {
         'haze': 'wi-haze'
     };
     
-    // Try to match the description to an icon
     const lowerDesc = description.toLowerCase();
     for (const [key, icon] of Object.entries(weatherIcons)) {
         if (lowerDesc.includes(key)) {
@@ -70,11 +128,9 @@ function getWeatherIcon(description) {
         }
     }
     
-    // Default icon if no match found
     return 'wi-day-cloudy';
 }
 
-// Function to display location and temperature
 function displayWeather(weatherData) {
     const weatherDisplay = document.getElementById('weatherDisplay');
     const weatherIcon = getWeatherIcon(weatherData.description);
@@ -105,7 +161,6 @@ function displayWeather(weatherData) {
     `;
 }
 
-// Form event listener
 document.getElementById('weatherForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -123,4 +178,8 @@ document.getElementById('weatherForm').addEventListener('submit', async function
         console.error('Error:', error);
         alert('Error fetching weather data. Please try again.');
     }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeAutocomplete();
 });

@@ -30,10 +30,16 @@ h1 {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    align-items: flex-start;
+}
+
+.input-container {
+    position: relative;
+    flex: 1;
 }
 
 #locationInput {
-    flex: 1;
+    width: 100%;
     padding: 12px;
     border: 2px solid #ddd;
     border-radius: 5px;
@@ -43,6 +49,35 @@ h1 {
 #locationInput:focus {
     outline: none;
     border-color: #007bff;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.suggestion-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
 }
 
 button {

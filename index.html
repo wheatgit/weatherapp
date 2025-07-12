@@ -12,7 +12,10 @@
         <h1>Weather App</h1>
         
         <form id="weatherForm">
-            <input type="text" id="locationInput" placeholder="Enter location..." required>
+            <div class="input-container">
+                <input type="text" id="locationInput" placeholder="Enter location..." required>
+                <div id="suggestions" class="suggestions"></div>
+            </div>
             <button type="submit">Get Weather</button>
         </form>
 
