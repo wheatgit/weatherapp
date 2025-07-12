@@ -65,11 +65,13 @@ function hideSuggestions() {
 }
 
 function showLoading() {
+    console.log('Showing loading...');
     document.getElementById('loading').classList.remove('hidden');
     document.getElementById('weatherDisplay').innerHTML = '';
 }
 
 function hideLoading() {
+    console.log('Hiding loading...');
     document.getElementById('loading').classList.add('hidden');
 }
 
