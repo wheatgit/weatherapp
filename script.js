@@ -43,3 +43,23 @@ function processWeatherData(rawData) {
         throw error;
     }
 }
+
+// Form event listener
+document.getElementById('weatherForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const location = document.getElementById('locationInput').value.trim();
+    if (!location) {
+        alert('Please enter a location');
+        return;
+    }
+    
+    try {
+        const rawWeatherData = await fetchWeatherData(location);
+        const processedWeatherData = processWeatherData(rawWeatherData);
+        console.log('Final weather data for', location, ':', processedWeatherData);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching weather data. Please try again.');
+    }
+});
