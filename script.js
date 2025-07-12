@@ -44,6 +44,18 @@ function processWeatherData(rawData) {
     }
 }
 
+// Function to display location and temperature
+function displayWeather(weatherData) {
+    const weatherDisplay = document.getElementById('weatherDisplay');
+    
+    weatherDisplay.innerHTML = `
+        <div class="weather-card">
+            <h2 class="location">${weatherData.location}</h2>
+            <div class="temperature">${weatherData.temperature}°C</div>
+        </div>
+    `;
+}
+
 // Form event listener
 document.getElementById('weatherForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -57,7 +69,7 @@ document.getElementById('weatherForm').addEventListener('submit', async function
     try {
         const rawWeatherData = await fetchWeatherData(location);
         const processedWeatherData = processWeatherData(rawWeatherData);
-        console.log('Final weather data for', location, ':', processedWeatherData);
+        displayWeather(processedWeatherData);
     } catch (error) {
         console.error('Error:', error);
         alert('Error fetching weather data. Please try again.');

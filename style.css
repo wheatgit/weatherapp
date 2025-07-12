@@ -66,3 +66,22 @@ button:hover {
     border-radius: 5px;
     min-height: 100px;
 }
+
+.weather-card {
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.location {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.temperature {
+    font-size: 48px;
+    font-weight: bold;
+    color: #007bff;
+}
