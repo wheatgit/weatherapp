@@ -64,6 +64,15 @@ function hideSuggestions() {
     document.getElementById('suggestions').style.display = 'none';
 }
 
+function showLoading() {
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('weatherDisplay').innerHTML = '';
+}
+
+function hideLoading() {
+    document.getElementById('loading').classList.add('hidden');
+}
+
 async function fetchWeatherData(location) {
     try {
         const response = await fetch(`${BASE_URL}/${encodeURIComponent(location)}/next5days?unitGroup=us&include=current&key=${API_KEY}&contentType=json`);
@@ -192,6 +201,8 @@ document.getElementById('weatherForm').addEventListener('submit', async function
         return;
     }
     
+    showLoading();
+    
     try {
         const rawWeatherData = await fetchWeatherData(location);
         const processedWeatherData = processWeatherData(rawWeatherData);
@@ -199,6 +210,8 @@ document.getElementById('weatherForm').addEventListener('submit', async function
     } catch (error) {
         console.error('Error:', error);
         alert('Error fetching weather data. Please try again.');
+    } finally {
+        hideLoading();
     }
 });
 
