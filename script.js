@@ -66,7 +66,7 @@ function hideSuggestions() {
 
 async function fetchWeatherData(location) {
     try {
-        const response = await fetch(`${BASE_URL}/${encodeURIComponent(location)}?unitGroup=us&include=current&key=${API_KEY}&contentType=json`);
+        const response = await fetch(`${BASE_URL}/${encodeURIComponent(location)}/next5days?unitGroup=us&include=current&key=${API_KEY}&contentType=json`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -85,6 +85,7 @@ function processWeatherData(rawData) {
     try {
         const currentConditions = rawData.currentConditions;
         const location = rawData.resolvedAddress || rawData.address;
+        const days = rawData.days;
         
         const processedData = {
             location: location,
@@ -93,7 +94,13 @@ function processWeatherData(rawData) {
             humidity: currentConditions.humidity,
             windSpeed: currentConditions.windspeed,
             description: currentConditions.conditions,
-            icon: currentConditions.icon
+            icon: currentConditions.icon,
+            forecast: days.slice(1, 6).map(day => ({
+                date: new Date(day.datetime).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+                temp: day.temp,
+                description: day.conditions,
+                icon: day.icon
+            }))
         };
         
         console.log('Processed weather data:', processedData);
@@ -135,6 +142,15 @@ function displayWeather(weatherData) {
     const weatherDisplay = document.getElementById('weatherDisplay');
     const weatherIcon = getWeatherIcon(weatherData.description);
     
+    const forecastHTML = weatherData.forecast.map(day => `
+        <div class="forecast-card">
+            <div class="forecast-date">${day.date}</div>
+            <i class="wi ${getWeatherIcon(day.description)} forecast-icon"></i>
+            <div class="forecast-temp">${day.temp}°F</div>
+            <div class="forecast-desc">${day.description}</div>
+        </div>
+    `).join('');
+    
     weatherDisplay.innerHTML = `
         <div class="weather-card">
             <h2 class="location">${weatherData.location}</h2>
@@ -156,6 +172,12 @@ function displayWeather(weatherData) {
                     <span class="label">Wind Speed:</span>
                     <span class="value">${weatherData.windSpeed} mph</span>
                 </div>
+            </div>
+        </div>
+        <div class="forecast-section">
+            <h3>5-Day Forecast</h3>
+            <div class="forecast-container">
+                ${forecastHTML}
             </div>
         </div>
     `;
