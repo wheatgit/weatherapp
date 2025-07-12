@@ -5,7 +5,7 @@ const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/r
 // Function to fetch weather data for a location
 async function fetchWeatherData(location) {
     try {
-        const response = await fetch(`${BASE_URL}/${encodeURIComponent(location)}?unitGroup=metric&include=current&key=${API_KEY}&contentType=json`);
+        const response = await fetch(`${BASE_URL}/${encodeURIComponent(location)}?unitGroup=us&include=current&key=${API_KEY}&contentType=json`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -51,7 +51,22 @@ function displayWeather(weatherData) {
     weatherDisplay.innerHTML = `
         <div class="weather-card">
             <h2 class="location">${weatherData.location}</h2>
-            <div class="temperature">${weatherData.temperature}°C</div>
+            <div class="temperature">${weatherData.temperature}°F</div>
+            <div class="description">${weatherData.description}</div>
+            <div class="details">
+                <div class="detail-item">
+                    <span class="label">Feels Like:</span>
+                    <span class="value">${weatherData.feelsLike}°F</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Humidity:</span>
+                    <span class="value">${weatherData.humidity}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Wind Speed:</span>
+                    <span class="value">${weatherData.windSpeed} mph</span>
+                </div>
+            </div>
         </div>
     `;
 }
