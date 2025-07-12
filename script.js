@@ -44,14 +44,48 @@ function processWeatherData(rawData) {
     }
 }
 
+// Function to get weather icon based on conditions
+function getWeatherIcon(description) {
+    const weatherIcons = {
+        'clear': 'wi-day-sunny',
+        'partly-cloudy-day': 'wi-day-cloudy',
+        'cloudy': 'wi-cloudy',
+        'rain': 'wi-rain',
+        'snow': 'wi-snow',
+        'fog': 'wi-fog',
+        'wind': 'wi-windy',
+        'thunderstorm': 'wi-thunderstorm',
+        'drizzle': 'wi-sprinkle',
+        'showers': 'wi-showers',
+        'overcast': 'wi-cloudy',
+        'mist': 'wi-fog',
+        'haze': 'wi-haze'
+    };
+    
+    // Try to match the description to an icon
+    const lowerDesc = description.toLowerCase();
+    for (const [key, icon] of Object.entries(weatherIcons)) {
+        if (lowerDesc.includes(key)) {
+            return icon;
+        }
+    }
+    
+    // Default icon if no match found
+    return 'wi-day-cloudy';
+}
+
 // Function to display location and temperature
 function displayWeather(weatherData) {
     const weatherDisplay = document.getElementById('weatherDisplay');
+    const weatherIcon = getWeatherIcon(weatherData.description);
     
     weatherDisplay.innerHTML = `
         <div class="weather-card">
             <h2 class="location">${weatherData.location}</h2>
-            <div class="temperature">${weatherData.temperature}°F</div>
+            <div class="weather-main">
+                <i class="wi ${weatherIcon} weather-icon"></i>
+                <div class="temperature">${weatherData.temperature}°F</div>
+            </div>
             <div class="description">${weatherData.description}</div>
             <div class="details">
                 <div class="detail-item">
